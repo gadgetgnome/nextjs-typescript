@@ -37,8 +37,7 @@ function Map(props: MapProps) {
 
     map.current = new mapboxgl.Map(options);
     map.current.on("load", (e) => {
-      console.log("layer", e);
-      const layer = e.target.addLayer({
+      e.target.addLayer({
         id: "route",
         type: "line",
         source: {
@@ -55,9 +54,8 @@ function Map(props: MapProps) {
           "line-opacity": 0.75,
         },
       });
-      console.log('layer', layer);
     });
-  }, []);
+  }, [currentRoute.positions]);
 
   return <div className="flex-grow w-[100%]" id="mapboxgl"></div>;
 }
