@@ -2,6 +2,8 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import mapboxgl, { FeatureIdentifier, MapboxOptions } from "mapbox-gl";
 import { Route } from "@/pages/route";
 
+// https://account.mapbox.com/
+
 type MapProps = {
   currentRoute: Route;
 };
@@ -19,9 +21,10 @@ function Map(props: MapProps) {
 
     const center = currentRoute.positions[Math.round(currentRoute.positions.length/2)];
 
+    // https://studio.mapbox.com/styles/paalsa/cldxieysp004g01ruvkgc60pl/edit/#10.19/59.539/10.6718
     const options: MapboxOptions = {
       container: "mapboxgl",
-      style: "mapbox://styles/mapbox/streets-v11",
+      style: "mapbox://styles/paalsa/cldxieysp004g01ruvkgc60pl",
       center: [center.long, center.lat],
       zoom: 7
     };
@@ -35,6 +38,7 @@ function Map(props: MapProps) {
       },
     };
 
+    // https://docs.mapbox.com/mapbox-gl-js/api/map/
     map.current = new mapboxgl.Map(options);
     map.current.on("load", (e) => {
       e.target.addLayer({
