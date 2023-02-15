@@ -1,8 +1,17 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import groq from 'groq'
-import client from '../client'
-import Link from 'next/link'
+import Head from "next/head";
+import Image from "next/image";
+import groq from "groq";
+import client from "../client";
+import Link from "next/link";
+
+import type * as Schema from "../sanity/schema";
+
+type QueryResult = Array<
+  Omit<Pick<Schema.Post, "title">, "author"> & {
+    author: Schema.Author;
+  }
+>;
+
 
 export default function Home({ posts }) {
   return (
@@ -13,33 +22,39 @@ export default function Home({ posts }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className='flex justify-center items-start min-h-screen p-10'>
-        <section className='max-w-3xl grow'>
+      <main className="flex justify-center items-start min-h-screen p-10">
+        <section className="max-w-3xl grow">
           <h1 className="font-bold text-2xl">Pål Smitt-Amundsen</h1>
           <p>Creative technologist / Business Developer / Conference Speaker</p>
-          <p><a className="text-black underline" href="mailto:paal@paal.org">paal@paal.org</a></p>
+          <p>
+            <a className="text-black underline" href="mailto:paal@paal.org">
+              paal@paal.org
+            </a>
+          </p>
         </section>
-        <nav className='basis-52 grow-0'>
+        <nav className="basis-52 grow-0">
           <h2>Sider</h2>
           <ul>
-            {posts.map((post) => (
-              <li key={post.slug} className="underline"><Link href={post.slug}>{post.title}</Link></li>
+            {posts.map((post:Schema.Post, i: number) => (
+              <li key={i} className="underline">
+                <Link href={post.slug.current}>{post.title}</Link>
+              </li>
             ))}
           </ul>
         </nav>
       </main>
     </>
-  )
+  );
 }
 
 
 export async function getStaticProps() {
-  const posts = await client.fetch(groq`
+  const posts = await client.fetch<QueryResult>(groq`
     *[_type == "post" && publishedAt < now()] | order(publishedAt desc)
-  `)
+  `);
   return {
     props: {
-      posts
-    }
-  }
+      posts,
+    },
+  };
 }

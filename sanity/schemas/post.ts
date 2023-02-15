@@ -18,6 +18,9 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
+      validation(Rule) {
+        return Rule.required()
+      },
     }),
     defineField({
       name: 'author',
